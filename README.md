@@ -12,6 +12,7 @@
   <a href="https://github.com/shoon/audio-fade-fixer/actions/workflows/ci.yml"><img src="https://github.com/shoon/audio-fade-fixer/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
   <a href="https://github.com/shoon/audio-fade-fixer/releases/latest"><img src="https://img.shields.io/github/v/release/shoon/audio-fade-fixer?display_name=tag&sort=semver" alt="Latest release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/shoon/audio-fade-fixer" alt="Apache 2.0 license"></a>
+  <a href="https://github.com/sponsors/shoon"><img src="https://img.shields.io/badge/Sponsor-shoon-EA4AAA?logo=githubsponsors&amp;logoColor=white" alt="Sponsor shoon on GitHub"></a>
 </p>
 
 Audio Fade Fixer scans the Windows audio-device registry class for Realtek entries, shows every match, backs up the current values, and applies a community-documented power-management workaround. It handles one or many matching Realtek devices in a single operation.
@@ -117,6 +118,10 @@ cargo build --locked --release
 The executable is written to `target\release\audio-fade-fixer.exe`.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) before changing registry discovery, backup handling, elevation, or restore validation.
+
+## Support development
+
+Audio Fade Fixer is free and open source. If it helped you, consider [sponsoring @shoon on GitHub](https://github.com/sponsors/shoon). Sponsorship helps cover code signing, test hardware, virtual machines, and the time required to maintain this project and build more practical security-focused utilities.
 
 ## Background
 
