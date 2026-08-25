@@ -2,6 +2,12 @@
 
 Notable project changes are recorded here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Clarified copyright ownership and third-party trademark attribution.
+
 ## [0.1.1] - 2026-08-25
 
 ### Changed
@@ -24,5 +30,6 @@ There are no changes to registry discovery, backup compatibility, fix values, re
 - Embedded application icon and Windows Common Controls manifest.
 - Portable Windows x64 release packaging and checksums.
 
+[Unreleased]: https://github.com/shoon/audio-fade-fixer/compare/v0.1.1...HEAD
 [0.1.1]: https://github.com/shoon/audio-fade-fixer/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/shoon/audio-fade-fixer/releases/tag/v0.1.0

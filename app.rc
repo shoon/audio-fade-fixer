@@ -15,11 +15,11 @@ BEGIN
   BEGIN
     BLOCK "040904b0"
     BEGIN
-      VALUE "CompanyName", "Audio Fade Fixer contributors\0"
+      VALUE "CompanyName", "Shaun Murphy\0"
       VALUE "FileDescription", "Audio Fade Fixer\0"
       VALUE "FileVersion", "0.1.1.0\0"
       VALUE "InternalName", "audio-fade-fixer\0"
-      VALUE "LegalCopyright", "Copyright 2026 Audio Fade Fixer contributors\0"
+      VALUE "LegalCopyright", "Copyright 2026 Shaun Murphy\0"
       VALUE "OriginalFilename", "audio-fade-fixer.exe\0"
       VALUE "ProductName", "Audio Fade Fixer\0"
       VALUE "ProductVersion", "0.1.1\0"

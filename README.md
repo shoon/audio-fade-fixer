@@ -148,8 +148,16 @@ Audio Fade Fixer is free and open source. If it helped you, consider [sponsoring
 
 The workaround was first described in this [r/HPOmen community post](https://www.reddit.com/r/HPOmen/comments/xy6q7w/audio_fading_in_and_out_fix/). Although that report concerned an HP Omen system, the registry values belong to matching Realtek audio driver entries and may also exist on computers from other manufacturers.
 
+## Trademarks
+
+Audio Fade Fixer is an independent open source project. Product and company names are used only to identify compatible hardware, operating systems, services, or the community source of the workaround.
+
+Realtek, Windows, HP, OMEN, YouTube, Reddit, and other names used in this project are trademarks or registered trademarks of their respective owners. All other trademarks are the property of their respective owners.
+
+This project is not affiliated with, authorized, sponsored, approved, or endorsed by Realtek, Microsoft, HP, Google, Reddit, or any other named hardware manufacturer or service provider.
+
 ## License
 
-Copyright 2026 Audio Fade Fixer contributors
+Copyright 2026 Shaun Murphy
 
 Licensed under the [Apache License 2.0](LICENSE). The software is distributed on an **AS IS** basis, without warranties or conditions of any kind. See [NOTICE](NOTICE) for attribution and non-affiliation information.

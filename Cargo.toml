@@ -1,6 +1,7 @@
 [package]
 name = "audio-fade-fixer"
 version = "0.1.1"
+authors = ["Shaun Murphy"]
 edition = "2024"
 rust-version = "1.85"
 license = "Apache-2.0"
