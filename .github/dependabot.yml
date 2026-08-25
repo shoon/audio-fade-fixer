@@ -10,6 +10,10 @@ updates:
     labels:
       - dependencies
     open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: winreg
+        versions:
+          - 0.56.x
 
   - package-ecosystem: github-actions
     directory: /
