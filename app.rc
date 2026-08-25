@@ -3,8 +3,8 @@
 1 ICON "assets\\audio-fade-fixer.ico"
 
 1 VERSIONINFO
-FILEVERSION 0,1,0,0
-PRODUCTVERSION 0,1,0,0
+FILEVERSION 0,1,1,0
+PRODUCTVERSION 0,1,1,0
 FILEFLAGSMASK 0x3fL
 FILEFLAGS 0x0L
 FILEOS 0x40004L
@@ -17,12 +17,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "Audio Fade Fixer contributors\0"
       VALUE "FileDescription", "Audio Fade Fixer\0"
-      VALUE "FileVersion", "0.1.0.0\0"
+      VALUE "FileVersion", "0.1.1.0\0"
       VALUE "InternalName", "audio-fade-fixer\0"
       VALUE "LegalCopyright", "Copyright 2026 Audio Fade Fixer contributors\0"
       VALUE "OriginalFilename", "audio-fade-fixer.exe\0"
       VALUE "ProductName", "Audio Fade Fixer\0"
-      VALUE "ProductVersion", "0.1.0\0"
+      VALUE "ProductVersion", "0.1.1\0"
     END
   END
   BLOCK "VarFileInfo"
