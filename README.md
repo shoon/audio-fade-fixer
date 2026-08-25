@@ -19,6 +19,10 @@ Audio Fade Fixer scans the Windows audio-device registry class for Realtek entri
 
 Nothing is changed during startup or scanning. Windows asks for administrator approval only after you confirm a fix or restore operation.
 
+<p align="center">
+  <img src="assets/Screenshot-audio-fade-fixer.png" width="652" alt="Audio Fade Fixer showing a detected Realtek audio registry entry and the backup, fix, and restore controls">
+</p>
+
 ## Download
 
 Download the latest portable build from [GitHub Releases](https://github.com/shoon/audio-fade-fixer/releases/latest):
