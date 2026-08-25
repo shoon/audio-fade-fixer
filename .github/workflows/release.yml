@@ -1,0 +1,120 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    name: Build Windows x64 release
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install stable Rust
+        shell: pwsh
+        run: |
+          rustup toolchain install stable --profile minimal --component clippy,rustfmt
+          rustup default stable
+
+      - name: Verify tag matches Cargo version
+        shell: pwsh
+        run: |
+          $metadata = cargo metadata --locked --no-deps --format-version 1 | ConvertFrom-Json
+          $version = $metadata.packages[0].version
+          $expectedTag = "v$version"
+          if ($env:GITHUB_REF_NAME -ne $expectedTag) {
+            throw "Tag $env:GITHUB_REF_NAME does not match Cargo.toml version $expectedTag"
+          }
+          if ($version -notmatch '^(\d+)\.(\d+)\.(\d+)$') {
+            throw "Release versions must contain three numeric components"
+          }
+          $resourceVersion = "$($Matches[1]),$($Matches[2]),$($Matches[3]),0"
+          if ((Get-Content app.rc -Raw) -notmatch "(?m)^FILEVERSION $resourceVersion$") {
+            throw "app.rc FILEVERSION does not match $version"
+          }
+          $manifestVersionPattern = 'version="' + [regex]::Escape("$version.0") + '"'
+          if ((Get-Content app.manifest -Raw) -notmatch $manifestVersionPattern) {
+            throw "app.manifest assembly version does not match $version"
+          }
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Run tests
+        run: cargo test --locked --all-targets
+
+      - name: Run Clippy
+        run: cargo clippy --locked --all-targets -- -D warnings
+
+      - name: Build release executable
+        run: cargo build --locked --release
+
+      - name: Package release
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $tag = $env:GITHUB_REF_NAME
+          $baseName = "audio-fade-fixer-$tag-windows-x64"
+          $packageDir = Join-Path "dist" $baseName
+          New-Item -ItemType Directory -Force -Path $packageDir | Out-Null
+
+          Copy-Item "target\release\audio-fade-fixer.exe" (Join-Path $packageDir "audio-fade-fixer.exe")
+          Copy-Item "LICENSE", "NOTICE", "README.md" $packageDir
+
+          $exeAsset = Join-Path "dist" "$baseName.exe"
+          $zipAsset = Join-Path "dist" "$baseName.zip"
+          Copy-Item "target\release\audio-fade-fixer.exe" $exeAsset
+          Compress-Archive -Path (Join-Path $packageDir "*") -DestinationPath $zipAsset -CompressionLevel Optimal
+
+          $checksumLines = foreach ($asset in @($exeAsset, $zipAsset)) {
+            $hash = Get-FileHash $asset -Algorithm SHA256
+            "$($hash.Hash.ToLowerInvariant())  $([IO.Path]::GetFileName($asset))"
+          }
+          [IO.File]::WriteAllLines(
+            (Join-Path $PWD "dist\SHA256SUMS.txt"),
+            $checksumLines,
+            [Text.Encoding]::ASCII
+          )
+
+      - name: Upload packaged build
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: audio-fade-fixer-${{ github.ref_name }}-windows-x64
+          path: |
+            dist/*.exe
+            dist/*.zip
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          $baseName = "audio-fade-fixer-$tag-windows-x64"
+          gh release create $tag `
+            "dist\$baseName.exe" `
+            "dist\$baseName.zip" `
+            "dist\SHA256SUMS.txt" `
+            --repo $env:GITHUB_REPOSITORY `
+            --title "Audio Fade Fixer $tag" `
+            --generate-notes `
+            --verify-tag

@@ -1,0 +1,66 @@
+name: Bug report
+description: Report incorrect behavior or a crash.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not attach backup files or report security vulnerabilities here. Use the private security link for anything that may cross the registry or UAC boundaries.
+  - type: input
+    id: version
+    attributes:
+      label: Application version
+      description: The release tag, such as v0.1.0.
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2, 64-bit
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Audio device
+      description: The Realtek device description shown by the application or Device Manager.
+      placeholder: Realtek(R) Audio
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include the action selected, expected result, actual result, and exact error text.
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Advanced log
+      description: Paste relevant log lines after removing anything you consider private. Do not attach a backup file.
+      render: text
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Open the application
+        2. Select ...
+        3. Approve ...
+        4. See ...
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety checks
+      options:
+        - label: I downloaded the executable from this repository's Releases page or built it from source.
+          required: true
+        - label: This report does not contain a backup file, credentials, or other private data.
+          required: true

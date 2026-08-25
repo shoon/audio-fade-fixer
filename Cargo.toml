@@ -1,0 +1,30 @@
+[package]
+name = "audio-fade-fixer"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "Apache-2.0"
+description = "A Windows utility for disabling Realtek audio idle power saving"
+repository = "https://github.com/shoon/audio-fade-fixer"
+homepage = "https://github.com/shoon/audio-fade-fixer"
+readme = "README.md"
+keywords = ["audio", "realtek", "registry", "windows"]
+categories = ["gui", "os::windows-apis"]
+publish = false
+
+[dependencies]
+native-windows-gui = { version = "1.0", default-features = false, features = ["embed-resource", "file-dialog", "listbox", "textbox"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+winapi = { version = "0.3", features = ["handleapi", "processthreadsapi", "shellapi", "shlobj", "synchapi", "sysinfoapi", "winuser"] }
+winreg = "0.55"
+
+[build-dependencies]
+embed-resource = "3"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+panic = "unwind"
