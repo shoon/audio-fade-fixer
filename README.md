@@ -15,13 +15,30 @@
   <a href="https://github.com/sponsors/shoon"><img src="https://img.shields.io/badge/Sponsor-shoon-EA4AAA?logo=githubsponsors&amp;logoColor=white" alt="Sponsor shoon on GitHub"></a>
 </p>
 
-Audio Fade Fixer scans the Windows audio-device registry class for Realtek entries, shows every match, backs up the current values, and applies a community-documented power-management workaround. It handles one or many matching Realtek devices in a single operation.
+Audio Fade Fixer is a Windows utility for a Realtek audio issue where sound is silent for the first second or fades in after playback starts, especially after a period of silence. It can affect the beginning of YouTube videos, browser audio, music, games, notifications, voice prompts, and other short sounds.
+
+The utility scans the Windows audio-device registry class for Realtek entries, shows every match, backs up the current values, and applies a community-documented power-management workaround. It handles one or many matching Realtek devices in a single operation.
 
 Nothing is changed during startup or scanning. Windows asks for administrator approval only after you confirm a fix or restore operation.
 
 <p align="center">
   <img src="assets/Screenshot-audio-fade-fixer.png" width="652" alt="Audio Fade Fixer showing a detected Realtek audio registry entry and the backup, fix, and restore controls">
 </p>
+
+## Symptoms this may help
+
+This workaround may apply when audio devices appear to work normally but the beginning of a sound is missing after the speakers have been idle. Common reports include:
+
+- a YouTube video starts playing, but its audio is silent for the first second;
+- browser audio or streaming video fades in instead of starting at full volume;
+- the first word of speech, a voice prompt, or a meeting notification is clipped;
+- short Windows notification sounds are missing or barely audible;
+- music or game audio takes a moment to wake after silence;
+- Realtek audio fades in and out around pauses even though the volume setting has not changed.
+
+The original report came from an HP Omen community, but the workaround is not tied to HP or Omen hardware. Audio Fade Fixer does not check the computer manufacturer. It looks for matching Realtek audio driver entries, so the same idle power behavior may appear on computers from other manufacturers.
+
+This utility is narrowly intended for the idle or wake symptom described above. It is unlikely to help with constant crackling, complete loss of audio, loose connections, damaged speakers, or problems limited to Bluetooth, HDMI, or USB audio devices.
 
 ## Download
 
@@ -129,7 +146,7 @@ Audio Fade Fixer is free and open source. If it helped you, consider [sponsoring
 
 ## Background
 
-The workaround was described in this [r/HPOmen community post](https://www.reddit.com/r/HPOmen/comments/xy6q7w/audio_fading_in_and_out_fix/).
+The workaround was first described in this [r/HPOmen community post](https://www.reddit.com/r/HPOmen/comments/xy6q7w/audio_fading_in_and_out_fix/). Although that report concerned an HP Omen system, the registry values belong to matching Realtek audio driver entries and may also exist on computers from other manufacturers.
 
 ## License
 
