@@ -45,7 +45,7 @@ jobs:
             throw "Release versions must contain three numeric components"
           }
           $resourceVersion = "$($Matches[1]),$($Matches[2]),$($Matches[3]),0"
-          if ((Get-Content app.rc -Raw) -notmatch "(?m)^FILEVERSION $resourceVersion$") {
+          if ((Get-Content app.rc -Raw) -notmatch "(?m)^FILEVERSION $resourceVersion\r?$") {
             throw "app.rc FILEVERSION does not match $version"
           }
           $manifestVersionPattern = 'version="' + [regex]::Escape("$version.0") + '"'
