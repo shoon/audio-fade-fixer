@@ -52,6 +52,20 @@ No installer is required. The release build supports 64-bit Windows 10 and Windo
 
 The current release is not code signed. Windows SmartScreen may identify it as an unfamiliar application. Verify the SHA-256 checksum before running it, or build the source yourself. Do not run a download whose checksum does not match the release checksum.
 
+### Scoop
+
+Install from the project-owned Scoop bucket:
+
+```powershell
+scoop bucket add shoon https://github.com/shoon/scoop-bucket
+scoop install shoon/audio-fade-fixer
+```
+
+Scoop installs and launches the application without elevation. Windows requests
+administrator approval only after you confirm a registry fix or restore.
+Uninstalling the Scoop package does not restore registry values; use **Restore
+latest** or **Choose backup** first if you want to undo the workaround.
+
 ## Use
 
 1. Open `audio-fade-fixer.exe`.

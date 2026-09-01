@@ -4,9 +4,19 @@ Notable project changes are recorded here. Versions follow [Semantic Versioning]
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-09-01
+
+### Added
+
+- Added a subtle, clickable GitHub Sponsors link to the bottom-right of the application window.
+- Added Scoop installation instructions for the project-owned `shoon/scoop-bucket`.
+- Added an application screenshot and expanded guidance for recognizing the Realtek audio fade symptom.
+
 ### Changed
 
 - Clarified copyright ownership and third-party trademark attribution.
+
+There are no changes to registry discovery, backup compatibility, fix values, restore validation, or elevation behavior in this release.
 
 ## [0.1.1] - 2026-08-25
 
@@ -30,6 +40,7 @@ There are no changes to registry discovery, backup compatibility, fix values, re
 - Embedded application icon and Windows Common Controls manifest.
 - Portable Windows x64 release packaging and checksums.
 
-[Unreleased]: https://github.com/shoon/audio-fade-fixer/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/shoon/audio-fade-fixer/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/shoon/audio-fade-fixer/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/shoon/audio-fade-fixer/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/shoon/audio-fade-fixer/releases/tag/v0.1.0
