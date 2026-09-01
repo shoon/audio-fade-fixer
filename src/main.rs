@@ -22,9 +22,14 @@ use winapi::{
         shellapi::{SEE_MASK_NOCLOSEPROCESS, SHELLEXECUTEINFOW, ShellExecuteExW},
         synchapi::WaitForSingleObject,
         winbase::{INFINITE, WAIT_FAILED},
-        winuser::SW_HIDE,
+        winuser::{SW_HIDE, SW_SHOWNORMAL},
     },
 };
+
+const SPONSOR_URL: &str = "https://github.com/sponsors/shoon";
+const SPONSOR_LINK_X: i32 = 478;
+const SPONSOR_LINK_COMPACT_Y: i32 = 377;
+const SPONSOR_LINK_ADVANCED_Y: i32 = 627;
 
 fn wide(value: &std::ffi::OsStr) -> Vec<u16> {
     value.encode_wide().chain(Some(0)).collect()
@@ -64,6 +69,25 @@ fn operation_nonce() -> String {
         now.subsec_nanos(),
         std::process::id()
     )
+}
+
+fn open_sponsor_page() -> io::Result<()> {
+    let target_wide = wide(std::ffi::OsStr::new(SPONSOR_URL));
+    let verb_wide = wide(std::ffi::OsStr::new("open"));
+    // SAFETY: the structure is initialized to the documented zero state, and
+    // both UTF-16 buffers are NUL-terminated and live through the call.
+    let mut info: SHELLEXECUTEINFOW = unsafe { mem::zeroed() };
+    info.cbSize = mem::size_of::<SHELLEXECUTEINFOW>() as u32;
+    info.lpVerb = verb_wide.as_ptr();
+    info.lpFile = target_wide.as_ptr();
+    info.nShow = SW_SHOWNORMAL;
+    // SAFETY: `info` has the documented size and all pointer fields used by
+    // ShellExecuteExW reference valid buffers for the duration of the call.
+    if unsafe { ShellExecuteExW(&mut info) } == FALSE {
+        Err(io::Error::last_os_error())
+    } else {
+        Ok(())
+    }
 }
 
 fn run_elevated_helper(
@@ -229,6 +253,7 @@ struct App {
     advanced: nwg::Button,
     status: nwg::Label,
     warning: nwg::Label,
+    sponsor: nwg::Label,
     log_label: nwg::Label,
     log: nwg::TextBox,
     file_dialog: nwg::FileDialog,
@@ -251,6 +276,7 @@ impl App {
             advanced: Default::default(),
             status: Default::default(),
             warning: Default::default(),
+            sponsor: Default::default(),
             log_label: Default::default(),
             log: Default::default(),
             file_dialog: Default::default(),
@@ -321,6 +347,13 @@ impl App {
         nwg::Label::builder().text("No warranty. Registry changes carry risk; you assume all risk. Reboot after applying or restoring.")
             .position((18, 337)).size((610, 38)).parent(&app.window).build(&mut app.warning)?;
         nwg::Label::builder()
+            .text("Sponsor on GitHub ↗")
+            .position((SPONSOR_LINK_X, SPONSOR_LINK_COMPACT_Y))
+            .size((150, 20))
+            .h_align(nwg::HTextAlign::Right)
+            .parent(&app.window)
+            .build(&mut app.sponsor)?;
+        nwg::Label::builder()
             .text("Operation log")
             .position((18, 387))
             .size((610, 22))
@@ -365,6 +398,9 @@ impl App {
                 }
                 if event == nwg::Event::OnButtonClick && event_handle == ui.advanced.handle {
                     ui.toggle_advanced();
+                }
+                if event == nwg::Event::OnLabelClick && event_handle == ui.sponsor.handle {
+                    ui.open_sponsor();
                 }
             }));
             if result.is_err() {
@@ -607,7 +643,22 @@ impl App {
         self.log.set_visible(open);
         self.advanced
             .set_text(if open { "Advanced ^" } else { "Advanced v" });
+        self.sponsor.set_position(
+            SPONSOR_LINK_X,
+            if open {
+                SPONSOR_LINK_ADVANCED_Y
+            } else {
+                SPONSOR_LINK_COMPACT_Y
+            },
+        );
         self.window.set_size(650, if open { 655 } else { 405 });
+    }
+
+    fn open_sponsor(&self) {
+        self.append_log(&format!("Opening GitHub Sponsors: {SPONSOR_URL}"));
+        if let Err(error) = open_sponsor_page() {
+            self.show_error("Could not open GitHub Sponsors", &error);
+        }
     }
 
     fn show_error(&self, title: &str, error: &dyn std::fmt::Display) {
