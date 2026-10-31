@@ -4,6 +4,10 @@ Notable project changes are recorded here. Versions follow [Semantic Versioning]
 
 ## [Unreleased]
 
+### Changed
+
+- The release workflow can now be started manually from `main` with a version input. It creates the release tag on the exact commit it built.
+
 ## [0.1.3] - 2026-10-31
 
 ### Changed

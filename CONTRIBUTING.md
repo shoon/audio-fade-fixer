@@ -43,3 +43,12 @@ Avoid adding general registry import support, command execution, remote backup s
 Keep each pull request focused. Explain the user-visible behavior, tests performed, and any effect on backup compatibility or privilege boundaries. Update the README and changelog when behavior changes.
 
 By contributing, you agree that your contribution is licensed under the Apache License 2.0.
+
+## Releasing
+
+1. Merge a pull request to `main` that bumps the version in `Cargo.toml`, `Cargo.lock`, `app.rc`, and `app.manifest`, and adds the `CHANGELOG.md` entry.
+2. Start the release in either of these ways:
+   - Push a `vX.Y.Z` tag that points to that commit.
+   - Run the **Release** workflow manually on `main` with the version, for example `0.1.3`. The workflow creates the tag on the commit it builds.
+
+Either way, the workflow checks that the versions match, runs the full check, and publishes the Windows build with checksums.
