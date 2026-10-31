@@ -5,6 +5,11 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release from main, without the v prefix (must match Cargo.toml, e.g. 0.1.3)"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -16,7 +21,9 @@ concurrency:
 jobs:
   windows:
     name: Build Windows x64 release
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: >-
+      startsWith(github.ref, 'refs/tags/v') ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     runs-on: windows-latest
     timeout-minutes: 25
 
@@ -32,14 +39,38 @@ jobs:
           rustup toolchain install stable --profile minimal --component clippy,rustfmt
           rustup default stable
 
+      - name: Resolve release tag
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: |
+          if ($env:GITHUB_EVENT_NAME -eq "workflow_dispatch") {
+            $requested = "$env:REQUESTED_VERSION".Trim()
+            if ($requested -notmatch '^\d+\.\d+\.\d+$') {
+              throw "Version input '$requested' must contain three numeric components, without a v prefix"
+            }
+            $tag = "v$requested"
+            $existing = gh api "repos/$env:GITHUB_REPOSITORY/git/matching-refs/tags/$tag" | ConvertFrom-Json
+            if ($LASTEXITCODE -ne 0) {
+              throw "Could not query existing tags"
+            }
+            if (@($existing | Where-Object { $_.ref -eq "refs/tags/$tag" }).Count -gt 0) {
+              throw "Tag $tag already exists; push a version bump before releasing again"
+            }
+          } else {
+            $tag = $env:GITHUB_REF_NAME
+          }
+          "RELEASE_TAG=$tag" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
       - name: Verify tag matches Cargo version
         shell: pwsh
         run: |
           $metadata = cargo metadata --locked --no-deps --format-version 1 | ConvertFrom-Json
           $version = $metadata.packages[0].version
           $expectedTag = "v$version"
-          if ($env:GITHUB_REF_NAME -ne $expectedTag) {
-            throw "Tag $env:GITHUB_REF_NAME does not match Cargo.toml version $expectedTag"
+          if ($env:RELEASE_TAG -ne $expectedTag) {
+            throw "Tag $env:RELEASE_TAG does not match Cargo.toml version $expectedTag"
           }
           if ($version -notmatch '^(\d+)\.(\d+)\.(\d+)$') {
             throw "Release versions must contain three numeric components"
@@ -69,7 +100,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          $tag = $env:GITHUB_REF_NAME
+          $tag = $env:RELEASE_TAG
           $baseName = "audio-fade-fixer-$tag-windows-x64"
           $packageDir = Join-Path "dist" $baseName
           New-Item -ItemType Directory -Force -Path $packageDir | Out-Null
@@ -95,7 +126,7 @@ jobs:
       - name: Upload packaged build
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: audio-fade-fixer-${{ github.ref_name }}-windows-x64
+          name: audio-fade-fixer-${{ env.RELEASE_TAG }}-windows-x64
           path: |
             dist/*.exe
             dist/*.zip
@@ -108,13 +139,24 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $tag = $env:GITHUB_REF_NAME
+          $tag = $env:RELEASE_TAG
           $baseName = "audio-fade-fixer-$tag-windows-x64"
-          gh release create $tag `
-            "dist\$baseName.exe" `
-            "dist\$baseName.zip" `
-            "dist\SHA256SUMS.txt" `
-            --repo $env:GITHUB_REPOSITORY `
-            --title "Audio Fade Fixer $tag" `
-            --generate-notes `
-            --verify-tag
+          $releaseArgs = @(
+            "release", "create", $tag,
+            "dist\$baseName.exe",
+            "dist\$baseName.zip",
+            "dist\SHA256SUMS.txt",
+            "--repo", $env:GITHUB_REPOSITORY,
+            "--title", "Audio Fade Fixer $tag",
+            "--generate-notes"
+          )
+          if ($env:GITHUB_EVENT_NAME -eq "workflow_dispatch") {
+            # Manual releases create the tag on the exact commit that was built and tested.
+            $releaseArgs += @("--target", $env:GITHUB_SHA)
+          } else {
+            $releaseArgs += "--verify-tag"
+          }
+          gh @releaseArgs
+          if ($LASTEXITCODE -ne 0) {
+            throw "gh release create failed"
+          }
