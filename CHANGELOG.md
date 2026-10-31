@@ -4,6 +4,16 @@ Notable project changes are recorded here. Versions follow [Semantic Versioning]
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-10-31
+
+### Changed
+
+- Updated `serde_json` from 1.0.151 to 1.0.154.
+- Updated the `embed-resource` build dependency from 3.0.11 to 3.0.12.
+- Updated the release workflow's `actions/upload-artifact` from 7.0.1 to 7.0.2.
+
+There are no changes to registry discovery, backup compatibility, fix values, restore validation, or elevation behavior in this release.
+
 ## [0.1.2] - 2026-09-01
 
 ### Added
